@@ -131,11 +131,6 @@
           <i data-lucide="swords" class="w-4 h-4"></i>
           <span>Play</span>
         </button>
-        <button data-nav="friends" class="nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition relative">
-          <i data-lucide="users" class="w-4 h-4"></i>
-          <span>Friends</span>
-          <span id="nav-friends-count" class="text-[10px] px-1.5 py-0.2 rounded-full bg-panel text-zinc-300">2</span>
-        </button>
         <button data-nav="profile" class="nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition">
           <i data-lucide="user-circle" class="w-4 h-4"></i>
           <span>Profile</span>
@@ -173,14 +168,10 @@
               <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-limehex/15 text-limehex border border-limehex/30">ELO <span id="hub-elo">1442</span></span>
             </div>
             <div class="flex items-center gap-2 mt-1 flex-wrap">
-              <span class="text-xs text-zinc-400">ID:</span>
+              <span class="text-xs text-zinc-400">Player ID:</span>
               <code id="hub-id-code" class="text-xs font-mono font-bold text-zinc-200 bg-bg px-2 py-0.5 rounded border border-borderc">DV-0000-XX</code>
               <button id="btn-hub-copy-code" class="text-xs text-limehex hover:underline flex items-center gap-1">
                 <i data-lucide="copy" class="w-3 h-3"></i> Copy ID
-              </button>
-              <span class="text-zinc-600">•</span>
-              <button id="btn-hub-copy-link" class="text-xs text-sky-400 hover:underline flex items-center gap-1">
-                <i data-lucide="link" class="w-3 h-3"></i> Friend Link
               </button>
             </div>
           </div>
@@ -188,9 +179,6 @@
         <div class="flex items-center gap-2 flex-wrap">
           <button id="btn-quick-edit-profile" class="px-3.5 py-2 rounded-xl bg-panel hover:bg-zinc-800 border border-borderc text-xs font-semibold flex items-center gap-1.5 transition">
             <i data-lucide="sparkles" class="w-3.5 h-3.5 text-limehex"></i> Customize Avatar
-          </button>
-          <button id="btn-quick-add-friend" class="px-3.5 py-2 rounded-xl bg-panel hover:bg-zinc-800 border border-borderc text-xs font-semibold flex items-center gap-1.5 transition">
-            <i data-lucide="user-plus" class="w-3.5 h-3.5 text-rosehex"></i> Add Friend
           </button>
         </div>
       </div>
@@ -318,9 +306,9 @@
                 <div class="bg-bg border border-borderc rounded-xl p-4 flex flex-col justify-between gap-3">
                   <div>
                     <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
-                      <i data-lucide="log-in" class="w-4 h-4 text-rosehex"></i> Join Friend's Room
+                      <i data-lucide="log-in" class="w-4 h-4 text-rosehex"></i> Join via Code or Link
                     </h3>
-                    <input id="input-join-room" type="text" placeholder="Paste Room Code (e.g. HEX-4829)" class="mt-2 w-full bg-surface border border-borderc rounded-lg px-3 py-2 text-xs font-mono text-white uppercase focus:outline-none focus:border-rosehex" />
+                    <input id="input-join-room" type="text" placeholder="Paste Room Code (HEX-4829) or Invite Link" class="mt-2 w-full bg-surface border border-borderc rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-rosehex" />
                   </div>
                   <button id="btn-join-room" class="w-full py-2.5 rounded-xl bg-rosehex hover:bg-[#ef2e7c] text-white font-bold text-sm transition">
                     Join Room
@@ -388,15 +376,25 @@
             </div>
           </div>
 
-          <!-- Quick Challenge Friends -->
-          <div class="bg-surface border border-borderc rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                <i data-lucide="users" class="w-4 h-4 text-rosehex"></i> Challenge a Friend
-              </h3>
-              <button id="btn-view-all-friends" class="text-xs text-limehex hover:underline">Manage</button>
-            </div>
-            <div id="hub-friends-list" class="space-y-2.5"></div>
+          <!-- How Online 2P Rooms Work -->
+          <div class="bg-surface border border-borderc rounded-2xl p-5 space-y-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="link-2" class="w-4 h-4 text-rosehex"></i> Direct Room Play
+            </h3>
+            <ol class="space-y-2.5 text-xs text-zinc-300">
+              <li class="flex items-start gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-limehex/15 text-limehex font-bold flex items-center justify-center shrink-0 text-[11px]">1</span>
+                <span><strong class="text-white">Player 1 hosts:</strong> Open <em>Online 2P</em> and click <strong>Create Online Room</strong> to get a Room Code & Invite Link.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-rosehex/15 text-rosehex font-bold flex items-center justify-center shrink-0 text-[11px]">2</span>
+                <span><strong class="text-white">Player 2 joins:</strong> Open the link directly or paste the Room Code to enter the match—no friend list needed.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-sky-500/15 text-sky-400 font-bold flex items-center justify-center shrink-0 text-[11px]">3</span>
+                <span><strong class="text-white">Chat & Voice:</strong> Message in real time and toggle live Voice Chat right beside the Hex board.</span>
+              </li>
+            </ol>
           </div>
         </div>
       </div>
@@ -635,72 +633,6 @@
       </div>
     </section>
 
-    <!-- ==================== VIEW 3: FRIENDS ==================== -->
-    <section id="view-friends" class="hidden space-y-5">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        <!-- Left: Your Shareable ID & Add Friend -->
-        <div class="lg:col-span-5 space-y-5">
-          <!-- Your Friend Code Card -->
-          <div class="bg-surface border border-borderc rounded-2xl p-5 space-y-4">
-            <h2 class="text-base font-extrabold text-white flex items-center gap-2">
-              <i data-lucide="share-2" class="w-4 h-4 text-limehex"></i> Your In-Game ID & Invite Link
-            </h2>
-            <p class="text-xs text-zinc-400">Share your Profile ID Code or direct Invite Link so anyone can add you as a friend and challenge you to Hex Duel.</p>
-
-            <div class="space-y-2.5">
-              <div>
-                <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Profile ID Code</label>
-                <div class="mt-1 flex items-center gap-2">
-                  <code id="friends-my-code" class="flex-1 bg-bg border border-borderc rounded-xl px-3.5 py-2.5 font-mono text-sm font-bold text-limehex tracking-wider">DV-0000-XX</code>
-                  <button id="btn-friends-copy-code" class="px-3.5 py-2.5 rounded-xl bg-panel hover:bg-zinc-800 border border-borderc text-xs font-bold text-white flex items-center gap-1.5 transition">
-                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy
-                  </button>
-                </div>
-              </div>
-              <div>
-                <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Direct Friend Invite Link</label>
-                <div class="mt-1 flex items-center gap-2">
-                  <input id="friends-my-link" type="text" readonly class="flex-1 bg-bg border border-borderc rounded-xl px-3.5 py-2.5 font-mono text-xs text-sky-300 focus:outline-none" />
-                  <button id="btn-friends-copy-link" class="px-3.5 py-2.5 rounded-xl bg-limehex hover:bg-[#aef547] text-zinc-950 text-xs font-extrabold flex items-center gap-1.5 transition">
-                    <i data-lucide="link" class="w-3.5 h-3.5"></i> Copy Link
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Add Friend Form -->
-          <div class="bg-surface border border-borderc rounded-2xl p-5 space-y-4">
-            <h2 class="text-base font-extrabold text-white flex items-center gap-2">
-              <i data-lucide="user-plus" class="w-4 h-4 text-rosehex"></i> Add a Friend by Code or Link
-            </h2>
-            <form id="add-friend-form" class="space-y-3">
-              <div>
-                <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Friend ID Code or Invite Link</label>
-                <input id="input-friend-code" type="text" required placeholder="e.g. DV-7741-RM or https://...#add=DV-7741-RM" class="mt-1 w-full bg-bg border border-borderc rounded-xl px-3.5 py-2.5 text-sm text-white font-mono focus:outline-none focus:border-limehex" />
-              </div>
-              <div>
-                <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Nickname (Optional)</label>
-                <input id="input-friend-name" type="text" maxlength="20" placeholder="Leave blank to auto-detect" class="mt-1 w-full bg-bg border border-borderc rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-limehex" />
-              </div>
-              <button type="submit" class="w-full py-2.5 rounded-xl bg-rosehex hover:bg-[#ef2e7c] text-white font-bold text-sm flex items-center justify-center gap-1.5 transition">
-                <i data-lucide="user-check" class="w-4 h-4"></i> Add Friend
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <!-- Right: Friends List -->
-        <div class="lg:col-span-7 bg-surface border border-borderc rounded-2xl p-5 flex flex-col">
-          <div class="flex items-center justify-between gap-2 mb-4">
-            <h2 class="text-base font-extrabold text-white">Your Friends (<span id="friends-total-count">0</span>)</h2>
-            <input id="friends-search" type="text" placeholder="Search friends..." class="bg-bg border border-borderc rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-limehex w-44" />
-          </div>
-          <div id="friends-list-container" class="space-y-3 flex-1"></div>
-        </div>
-      </div>
-    </section>
-
     <!-- ==================== VIEW 4: PROFILE & ANIME AVATARS ==================== -->
     <section id="view-profile" class="hidden space-y-5">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
@@ -811,29 +743,6 @@
     </div>
   </div>
 
-  <!-- FRIEND DM QUICK MODAL -->
-  <div id="modal-dm" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-surface border border-borderc rounded-2xl max-w-md w-full overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
-      <div class="p-4 bg-[#17171b] border-b border-borderc flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <img id="dm-avatar" src="" alt="" class="w-9 h-9 rounded-full object-cover border border-limehex/50" />
-          <div>
-            <div id="dm-name" class="text-sm font-bold text-white">Friend</div>
-            <div id="dm-code" class="text-[11px] font-mono text-zinc-400">DV-0000</div>
-          </div>
-        </div>
-        <button id="btn-close-dm" class="p-1.5 rounded-lg bg-panel hover:bg-zinc-800 text-zinc-400 hover:text-white">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-      <div id="dm-feed" class="flex-1 overflow-y-auto p-4 space-y-2.5 bg-bg/50 min-h-[220px]"></div>
-      <form id="dm-form" class="p-3 bg-surface border-t border-borderc flex items-center gap-2">
-        <input id="dm-input" type="text" placeholder="Message friend..." class="flex-1 bg-bg border border-borderc rounded-xl px-3 py-2 text-xs sm:text-sm text-white focus:outline-none focus:border-limehex" />
-        <button type="submit" class="px-3.5 py-2 rounded-xl bg-limehex text-zinc-950 font-bold text-xs">Send</button>
-      </form>
-    </div>
-  </div>
-
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-xs w-full"></div>
 
@@ -853,10 +762,7 @@
         { id: 'f3', name: 'Mei', role: 'Visor Scout', gender: 'female', src: 'data:image/jpeg;base64,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' },
       ];
 
-      const DEFAULT_FRIENDS = [
-        { id: 'DV-1995-DT', name: 'durgeshthakur1995', avatarId: 'm2', elo: 1469, online: true },
-        { id: 'DV-4082-YK', name: 'YukiHex', avatarId: 'f2', elo: 1510, online: true },
-      ];
+      const SIM_RIVAL = { name: 'durgeshthakur1995', avatarId: 'm2', elo: 1469 };
 
       const STORAGE_KEY = 'duelverse_hex_v1';
 
@@ -891,8 +797,7 @@
           losses: 0,
           streak: 0,
         },
-        friends: [...DEFAULT_FRIENDS],
-        dmHistory: {},
+
         matchHistory: [],
         soundEnabled: true,
       };
@@ -907,8 +812,7 @@
                 ...userState,
                 ...parsed,
                 profile: { ...userState.profile, ...parsed.profile },
-                friends: Array.isArray(parsed.friends) ? parsed.friends : userState.friends,
-                dmHistory: parsed.dmHistory || {},
+
                 matchHistory: Array.isArray(parsed.matchHistory) ? parsed.matchHistory : [],
               };
             }
@@ -2028,9 +1932,9 @@
         } catch (e) {}
       }
 
-      function startSimulatedOnlineMatch(rivalFriend) {
+      function startSimulatedOnlineMatch() {
         cleanupNet();
-        const rival = rivalFriend || DEFAULT_FRIENDS[0];
+        const rival = SIM_RIVAL;
         const size = parseInt(document.getElementById('cfg-board-size').value, 10);
         const timeLimit = parseInt(document.getElementById('cfg-time-limit').value, 10);
         const pieRule = document.getElementById('cfg-pie-rule').checked;
@@ -2308,11 +2212,10 @@
       ========================================================= */
       let currentView = 'play';
       let currentAvatarFilter = 'all';
-      let activeDmFriendId = null;
 
       function switchView(view) {
         currentView = view;
-        ['play', 'game', 'friends', 'profile'].forEach(v => {
+        ['play', 'game', 'profile'].forEach(v => {
           document.getElementById(`view-${v}`).classList.toggle('hidden', v !== view);
         });
         document.querySelectorAll('.nav-tab').forEach(btn => {
@@ -2331,8 +2234,6 @@
       function renderProfileViews() {
         const p = userState.profile;
         const avSrc = getAvatarSrc(p.avatarId);
-        const shareLink = buildShareLink('add', p.code);
-
         document.getElementById('header-avatar').src = avSrc;
         document.getElementById('header-username').textContent = p.name;
         document.getElementById('hub-avatar').src = avSrc;
@@ -2340,9 +2241,6 @@
         document.getElementById('hub-elo').textContent = p.elo;
         document.getElementById('hub-id-code').textContent = p.code;
         document.getElementById('offline-p1-name').value = p.name;
-
-        document.getElementById('friends-my-code').textContent = p.code;
-        document.getElementById('friends-my-link').value = shareLink;
 
         document.getElementById('profile-preview-avatar').src = avSrc;
         document.getElementById('profile-preview-name').textContent = p.name;
@@ -2372,7 +2270,6 @@
         }
 
         renderAvatarGrid();
-        renderFriends();
       }
 
       function renderAvatarGrid() {
@@ -2401,140 +2298,6 @@
             showToast('Anime avatar updated!', 'success');
           });
         });
-      }
-
-      function renderFriends() {
-        const q = (document.getElementById('friends-search')?.value || '').trim().toLowerCase();
-        const filtered = userState.friends.filter(f =>
-          !q || f.name.toLowerCase().includes(q) || f.id.toLowerCase().includes(q)
-        );
-        document.getElementById('nav-friends-count').textContent = String(userState.friends.length);
-        document.getElementById('friends-total-count').textContent = String(userState.friends.length);
-
-        const listEl = document.getElementById('friends-list-container');
-        if (!filtered.length) {
-          listEl.innerHTML = '<div class="bg-bg/60 border border-borderc rounded-xl p-6 text-center text-xs text-zinc-400">No friends match your search. Add a friend using their ID code or link!</div>';
-        } else {
-          listEl.innerHTML = filtered.map(f => `
-            <div class="bg-bg border border-borderc rounded-xl p-3 flex flex-wrap items-center justify-between gap-3">
-              <div class="flex items-center gap-3 min-w-0">
-                <div class="relative shrink-0">
-                  <img src="${getAvatarSrc(f.avatarId)}" alt="${escapeHtml(f.name)}" class="w-11 h-11 rounded-full object-cover border border-borderc" />
-                  <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-bg ${f.online ? 'bg-limehex' : 'bg-zinc-500'}"></span>
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-bold text-white truncate">${escapeHtml(f.name)}</div>
-                  <div class="flex items-center gap-2 text-[11px] text-zinc-400">
-                    <code class="font-mono text-zinc-300">${escapeHtml(f.id)}</code>
-                    <span>•</span>
-                    <span>ELO ${f.elo}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <button data-challenge="${escapeHtml(f.id)}" class="btn-challenge-friend px-3 py-1.5 rounded-lg bg-limehex/15 hover:bg-limehex/25 border border-limehex/40 text-limehex text-xs font-bold transition">Duel</button>
-                <button data-dm="${escapeHtml(f.id)}" class="btn-dm-friend px-2.5 py-1.5 rounded-lg bg-panel hover:bg-zinc-800 border border-borderc text-zinc-200 text-xs font-semibold transition">Chat</button>
-                <button data-remove="${escapeHtml(f.id)}" class="btn-remove-friend p-1.5 rounded-lg bg-panel hover:bg-rosehex/20 border border-borderc text-zinc-400 hover:text-rose-400 transition" title="Remove Friend">
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                </button>
-              </div>
-            </div>
-          `).join('');
-        }
-
-        // Hub Quick Friends List
-        const hubList = document.getElementById('hub-friends-list');
-        hubList.innerHTML = userState.friends.slice(0, 3).map(f => `
-          <div class="bg-bg border border-borderc rounded-xl p-2.5 flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <img src="${getAvatarSrc(f.avatarId)}" alt="${escapeHtml(f.name)}" class="w-9 h-9 rounded-full object-cover border border-borderc shrink-0" />
-              <div class="min-w-0">
-                <div class="text-xs font-bold text-white truncate">${escapeHtml(f.name)}</div>
-                <div class="text-[10px] text-zinc-400">ELO ${f.elo} • ${f.online ? '<span class="text-limehex">Online</span>' : 'Offline'}</div>
-              </div>
-            </div>
-            <button data-challenge="${escapeHtml(f.id)}" class="btn-challenge-friend px-2.5 py-1 rounded-lg bg-limehex/15 hover:bg-limehex/25 border border-limehex/40 text-limehex text-[11px] font-bold shrink-0 transition">Duel</button>
-          </div>
-        `).join('') || '<div class="text-xs text-zinc-500">Add friends to challenge them!</div>';
-
-        // Attach listeners
-        document.querySelectorAll('.btn-challenge-friend').forEach(b => {
-          b.addEventListener('click', () => {
-            const friend = userState.friends.find(x => x.id === b.dataset.challenge);
-            if (friend) startSimulatedOnlineMatch(friend);
-          });
-        });
-        document.querySelectorAll('.btn-dm-friend').forEach(b => {
-          b.addEventListener('click', () => openDmModal(b.dataset.dm));
-        });
-        document.querySelectorAll('.btn-remove-friend').forEach(b => {
-          b.addEventListener('click', () => {
-            userState.friends = userState.friends.filter(x => x.id !== b.dataset.remove);
-            saveState();
-            renderFriends();
-            showToast('Friend removed.', 'info');
-          });
-        });
-
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-      }
-
-      function addFriendFromInput(rawCode, customName) {
-        const clean = rawCode.trim().replace(/^.*add=/i, '').replace(/[^A-Za-z0-9-]/g, '').toUpperCase();
-        if (!clean || clean.length < 4) {
-          showToast('Enter a valid Friend ID Code or Invite Link.', 'error');
-          return false;
-        }
-        if (clean === userState.profile.code.toUpperCase()) {
-          showToast('That is your own Profile ID!', 'error');
-          return false;
-        }
-        if (userState.friends.some(f => f.id.toUpperCase() === clean)) {
-          showToast('This player is already in your friends list.', 'info');
-          return false;
-        }
-        const avatarIdx = clean.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % AVATARS.length;
-        const name = (customName && customName.trim()) ? customName.trim() : `Duelist_${clean.slice(-4)}`;
-        userState.friends.unshift({
-          id: clean,
-          name,
-          avatarId: AVATARS[avatarIdx].id,
-          elo: 1350 + (avatarIdx * 35),
-          online: true,
-        });
-        saveState();
-        renderFriends();
-        showToast(`Added ${name} (${clean}) as a friend!`, 'success');
-        return true;
-      }
-
-      function openDmModal(friendId) {
-        const f = userState.friends.find(x => x.id === friendId);
-        if (!f) return;
-        activeDmFriendId = friendId;
-        document.getElementById('dm-avatar').src = getAvatarSrc(f.avatarId);
-        document.getElementById('dm-name').textContent = f.name;
-        document.getElementById('dm-code').textContent = f.id;
-        renderDmFeed();
-        document.getElementById('modal-dm').classList.remove('hidden');
-      }
-
-      function renderDmFeed() {
-        const feed = document.getElementById('dm-feed');
-        const msgs = userState.dmHistory[activeDmFriendId] || [];
-        if (!msgs.length) {
-          feed.innerHTML = '<div class="text-center text-xs text-zinc-500 py-6">Say hi or share a Hex Duel room code!</div>';
-          return;
-        }
-        feed.innerHTML = msgs.map(m => `
-          <div class="flex ${m.self ? 'justify-end' : 'justify-start'}">
-            <div class="max-w-[80%] px-3 py-2 rounded-xl text-xs ${m.self ? 'bg-limehex/20 border border-limehex/40 text-white' : 'bg-panel border border-borderc text-zinc-200'}">
-              <div>${escapeHtml(m.text)}</div>
-              <div class="text-[9px] text-zinc-400 mt-0.5 text-right">${m.time}</div>
-            </div>
-          </div>
-        `).join('');
-        feed.scrollTop = feed.scrollHeight;
       }
 
       function escapeHtml(str) {
@@ -2573,8 +2336,6 @@
         document.getElementById('nav-brand-btn').addEventListener('click', () => switchView('play'));
         document.getElementById('btn-header-profile').addEventListener('click', () => switchView('profile'));
         document.getElementById('btn-quick-edit-profile').addEventListener('click', () => switchView('profile'));
-        document.getElementById('btn-quick-add-friend').addEventListener('click', () => switchView('friends'));
-        document.getElementById('btn-view-all-friends').addEventListener('click', () => switchView('friends'));
 
         // Sound toggle
         document.getElementById('btn-sound').addEventListener('click', () => {
@@ -2591,11 +2352,8 @@
         document.getElementById('btn-close-rules').addEventListener('click', () => document.getElementById('modal-rules').classList.add('hidden'));
         document.getElementById('btn-rules-ok').addEventListener('click', () => document.getElementById('modal-rules').classList.add('hidden'));
 
-        // Hub Copy buttons
-        document.getElementById('btn-hub-copy-code').addEventListener('click', () => copyText(userState.profile.code, 'Profile ID copied!'));
-        document.getElementById('btn-hub-copy-link').addEventListener('click', () => copyText(buildShareLink('add', userState.profile.code), 'Friend invite link copied!'));
-        document.getElementById('btn-friends-copy-code').addEventListener('click', () => copyText(userState.profile.code, 'Profile ID copied!'));
-        document.getElementById('btn-friends-copy-link').addEventListener('click', () => copyText(buildShareLink('add', userState.profile.code), 'Friend invite link copied!'));
+        // Hub Copy ID button
+        document.getElementById('btn-hub-copy-code').addEventListener('click', () => copyText(userState.profile.code, 'Player ID copied!'));
 
         // Hub Mode Tabs
         let activeModeTab = 'offline';
@@ -2612,7 +2370,7 @@
           });
         }
         document.querySelectorAll('.mode-tab').forEach(t => t.addEventListener('click', () => selectModeTab(t.dataset.mode)));
-        selectModeTab('offline');
+        selectModeTab('online');
 
         // Bot Difficulty
         let selectedDiff = 'medium';
@@ -2839,33 +2597,6 @@
           btn.addEventListener('click', () => sendInGameChat(btn.dataset.quick));
         });
 
-        // Friends Forms & Search
-        document.getElementById('add-friend-form').addEventListener('submit', (e) => {
-          e.preventDefault();
-          const codeEl = document.getElementById('input-friend-code');
-          const nameEl = document.getElementById('input-friend-name');
-          if (addFriendFromInput(codeEl.value, nameEl.value)) {
-            codeEl.value = '';
-            nameEl.value = '';
-          }
-        });
-        document.getElementById('friends-search').addEventListener('input', renderFriends);
-
-        // Friend DM Modal
-        document.getElementById('btn-close-dm').addEventListener('click', () => document.getElementById('modal-dm').classList.add('hidden'));
-        document.getElementById('dm-form').addEventListener('submit', (e) => {
-          e.preventDefault();
-          const inp = document.getElementById('dm-input');
-          const txt = inp.value.trim();
-          if (!txt || !activeDmFriendId) return;
-          if (!userState.dmHistory[activeDmFriendId]) userState.dmHistory[activeDmFriendId] = [];
-          const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          userState.dmHistory[activeDmFriendId].push({ self: true, text: txt, time });
-          saveState();
-          inp.value = '';
-          renderDmFeed();
-        });
-
         // Profile Form & Avatar Filters
         document.getElementById('profile-form').addEventListener('submit', (e) => {
           e.preventDefault();
@@ -2903,18 +2634,12 @@
         });
       }
 
-      // Parse #add=CODE or #room=CODE on load
+      // Parse #room=CODE or ?room=CODE on load so Player 2 joins directly via link
       function checkUrlHashInvite() {
         const hash = (window.location.hash || '').replace(/^#/, '');
-        if (!hash) return;
-        const params = new URLSearchParams(hash);
-        const addCode = params.get('add');
-        const roomCode = params.get('room');
-        if (addCode) {
-          switchView('friends');
-          document.getElementById('input-friend-code').value = addCode;
-          addFriendFromInput(addCode, '');
-        } else if (roomCode) {
+        const search = (window.location.search || '').replace(/^\?/, '');
+        const roomCode = new URLSearchParams(hash).get('room') || new URLSearchParams(search).get('room');
+        if (roomCode) {
           joinOnlineRoom(roomCode);
         }
       }
