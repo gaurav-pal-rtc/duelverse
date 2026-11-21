@@ -638,7 +638,7 @@
           <input id="input-player-name" type="text" maxlength="20" required placeholder="e.g. goku482" class="flex-1 bg-bg border border-borderc rounded-xl px-3.5 py-2 text-sm text-white font-semibold focus:outline-none focus:border-limehex" />
           <button type="submit" class="px-4 py-2 rounded-xl bg-limehex hover:bg-[#aef547] text-zinc-950 font-extrabold text-xs transition">Save</button>
         </div>
-        <div id="rename-feedback" class="text-[11px] text-zinc-400">Identical names are not accepted — every player gets a unique name.</div>
+        <div id="rename-feedback" class="text-xs text-zinc-400 rounded-xl px-3 py-2 bg-bg/70 border border-borderc">Database check active: identical names across different IPs are not accepted.</div>
       </form>
 
       <div class="pt-2 border-t border-borderc space-y-3">
@@ -714,11 +714,35 @@
         return `HEX-${num}`;
       }
 
-      // Registry: maps IP -> assigned name, and tracks ALL taken names (case-insensitive)
+      // Database Registry: maps IP -> name AND lowercase name -> owner IP (synced across tabs & connected peers)
       let nameRegistry = {
         ipToName: {},
-        takenNames: [], // lowercase unique strings
+        nameToIp: {},
       };
+      let globalNameChannel = null;
+      try {
+        if (typeof BroadcastChannel !== 'undefined') {
+          globalNameChannel = new BroadcastChannel('duelverse_name_db_v1');
+          globalNameChannel.onmessage = (ev) => {
+            if (!ev.data || ev.data.type !== 'sync_db') return;
+            Object.assign(nameRegistry.ipToName, ev.data.ipToName || {});
+            Object.assign(nameRegistry.nameToIp, ev.data.nameToIp || {});
+            saveStorage();
+          };
+        }
+      } catch (e) {}
+
+      function broadcastNameDb() {
+        try {
+          if (globalNameChannel) {
+            globalNameChannel.postMessage({
+              type: 'sync_db',
+              ipToName: nameRegistry.ipToName,
+              nameToIp: nameRegistry.nameToIp,
+            });
+          }
+        } catch (e) {}
+      }
 
       let userState = {
         ip: null,
@@ -739,7 +763,13 @@
             const r = JSON.parse(regRaw);
             if (r && typeof r === 'object') {
               nameRegistry.ipToName = r.ipToName || {};
-              nameRegistry.takenNames = Array.isArray(r.takenNames) ? r.takenNames : [];
+              nameRegistry.nameToIp = r.nameToIp || {};
+              if (Array.isArray(r.takenNames)) {
+                r.takenNames.forEach(n => {
+                  const low = String(n).toLowerCase();
+                  if (!nameRegistry.nameToIp[low]) nameRegistry.nameToIp[low] = 'reserved';
+                });
+              }
             }
           }
           const stRaw = localStorage.getItem(STORAGE_KEY);
@@ -770,9 +800,12 @@
       function isNameTaken(candidate, ignoreCurrentOwn = true) {
         const low = candidate.trim().toLowerCase();
         if (!low) return true;
-        if (ignoreCurrentOwn && userState.name && low === userState.name.toLowerCase()) return false;
         if (remoteTakenNames.has(low)) return true;
-        return nameRegistry.takenNames.includes(low);
+        const ownerIp = nameRegistry.nameToIp[low];
+        if (!ownerIp) return false;
+        if (ignoreCurrentOwn && userState.ip && ownerIp === userState.ip) return false;
+        if (ignoreCurrentOwn && userState.name && low === userState.name.toLowerCase() && ownerIp === userState.ip) return false;
+        return true;
       }
 
       function generateUniqueAnimeName() {
@@ -792,17 +825,15 @@
         const existing = nameRegistry.ipToName[ipKey];
         if (existing) {
           userState.name = existing;
-          if (!nameRegistry.takenNames.includes(existing.toLowerCase())) {
-            nameRegistry.takenNames.push(existing.toLowerCase());
-          }
+          nameRegistry.nameToIp[existing.toLowerCase()] = ipKey;
         } else {
-          // New IP: assign a brand-new unique anime name + 3 digits (never repeating any existing name)
           const fresh = generateUniqueAnimeName();
           userState.name = fresh;
           nameRegistry.ipToName[ipKey] = fresh;
-          nameRegistry.takenNames.push(fresh.toLowerCase());
+          nameRegistry.nameToIp[fresh.toLowerCase()] = ipKey;
         }
         saveStorage();
+        broadcastNameDb();
         renderIdentityUI();
       }
 
@@ -1813,7 +1844,11 @@
         if (data.type === 'hello') {
           net.connected = true;
           document.getElementById('waiting-overlay').classList.add('hidden');
-          if (data.name) remoteTakenNames.add(data.name.toLowerCase());
+          if (data.name) {
+            remoteTakenNames.add(data.name.toLowerCase());
+            nameRegistry.nameToIp[data.name.toLowerCase()] = data.ip || 'remote-peer';
+            saveStorage();
+          }
           if (net.isHost) {
             game.p2 = { name: data.name, elo: data.elo || 1200, avatar: getAvatarSrc(data.avatarId) };
             sendNetMessage({
@@ -1854,6 +1889,8 @@
           if (data.name) {
             remoteTakenNames.clear();
             remoteTakenNames.add(data.name.toLowerCase());
+            nameRegistry.nameToIp[data.name.toLowerCase()] = data.ip || 'remote-peer';
+            saveStorage();
             if (net.isHost) game.p2.name = data.name;
             else game.p1.name = data.name;
             updateGameUI();
@@ -2319,50 +2356,52 @@
           document.getElementById('modal-identity').classList.add('hidden');
         });
 
-        // Live uniqueness feedback while typing new name
+        // Live database uniqueness check while typing new name
         document.getElementById('input-player-name').addEventListener('input', (e) => {
           const val = e.target.value.trim();
           const fb = document.getElementById('rename-feedback');
           if (val.length < 3) {
-            fb.className = 'text-[11px] text-amber-400';
+            fb.className = 'text-xs text-amber-300 rounded-xl px-3 py-2 bg-amber-500/10 border border-amber-500/40 font-semibold';
             fb.textContent = 'Name must be at least 3 characters.';
           } else if (isNameTaken(val, true)) {
-            fb.className = 'text-[11px] text-rose-400 font-semibold';
-            fb.textContent = 'That name is already taken! Identical names are not accepted.';
+            fb.className = 'text-xs text-rose-300 rounded-xl px-3 py-2 bg-rosehex/15 border border-rosehex/50 font-semibold';
+            fb.textContent = `Warning: Someone else already has the name "${val}". Identical names are not accepted.`;
           } else {
-            fb.className = 'text-[11px] text-limehex font-semibold';
-            fb.textContent = 'Name is unique and available!';
+            fb.className = 'text-xs text-limehex rounded-xl px-3 py-2 bg-limehex/10 border border-limehex/40 font-semibold';
+            fb.textContent = `"${val}" is available in the database!`;
           }
         });
 
-        // Submit Rename (Strictly rejects identical/taken names)
+        // Submit Rename (Checks DB first; strictly blocks & warns if another IP owns that name)
         document.getElementById('rename-form').addEventListener('submit', (e) => {
           e.preventDefault();
           const candidate = document.getElementById('input-player-name').value.trim();
           const fb = document.getElementById('rename-feedback');
           if (candidate.length < 3) {
-            fb.className = 'text-[11px] text-rose-400 font-semibold';
+            fb.className = 'text-xs text-rose-300 rounded-xl px-3 py-2 bg-rosehex/15 border border-rosehex/50 font-semibold';
             fb.textContent = 'Name must be at least 3 characters.';
             return;
           }
           if (isNameTaken(candidate, true)) {
-            fb.className = 'text-[11px] text-rose-400 font-semibold';
-            fb.textContent = 'That name is already taken! Try different numbers or characters.';
-            showToast('Identical names are not accepted.', 'error');
+            fb.className = 'text-xs text-rose-300 rounded-xl px-3 py-2 bg-rosehex/15 border border-rosehex/50 font-semibold';
+            fb.textContent = `Warning: Someone else already has the name "${candidate}". Please choose a different name.`;
+            showToast(`Warning: "${candidate}" is already taken by another player!`, 'error');
             return;
           }
-          // Record new unique name in registry for this IP
           const low = candidate.toLowerCase();
-          if (!nameRegistry.takenNames.includes(low)) nameRegistry.takenNames.push(low);
-          if (userState.ip) nameRegistry.ipToName[userState.ip] = candidate;
+          const myIp = userState.ip || userState.sessionId;
+          // Keep old name reserved or update owner mapping cleanly
+          nameRegistry.ipToName[myIp] = candidate;
+          nameRegistry.nameToIp[low] = myIp;
           userState.name = candidate;
           saveStorage();
+          broadcastNameDb();
           renderIdentityUI();
           if (game.active && game.mode === 'online-live') {
-            sendNetMessage({ type: 'rename', name: candidate });
+            sendNetMessage({ type: 'rename', name: candidate, ip: myIp });
           }
           document.getElementById('modal-identity').classList.add('hidden');
-          showToast(`Name changed to ${candidate}!`, 'success');
+          showToast(`Name saved as ${candidate}!`, 'success');
         });
 
         // Avatar Filter Tabs
